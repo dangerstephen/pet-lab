@@ -9,9 +9,16 @@ class OwnersController < ApplicationController
   end
 
   def create
-    owner = Owner.create(owner_params)
-    redirect_to owner_path(owner)
+    @owner = Owner.new(owner_params)
+  respond_to do |format|
+    if @owner.save
+      format.html {redirect_to @owner, notice: "Owner was successfully created!"}
+    else
+      format.html{render :new}
+      flash[:notice]= "ERROR while creating owner. Try again"
+    end
   end
+end
 
   def show
     owner_id = params[:id]
@@ -19,15 +26,29 @@ class OwnersController < ApplicationController
   end
 
   def edit
-    # stretch
-  end
+    owner_id = params[:id]
+    @owner = Owner.find(owner_id)
+    end
 
   def update
-    # stretch
+    owner_id = params[:id]
+    @owner = Owner.find(owner_id)
+
+    if @owner.update(owner_params)
+      redirect_to('/owners')
+      flash[:notice]= "You updated the owner"
+    else
+      render('edit')
+      flash[:notice]= "ERROR updating please try agian"
+    end
   end
 
   def destroy
-    # stretch
+    owner_id = params[:id]
+@owner = Owner.find(owner_id)
+@owner.destroy
+
+redirect_to('/owners')
   end
 
 
